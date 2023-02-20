@@ -11,7 +11,7 @@ var Command = &cobra.Command{
 	Short: "this is a cmd for server start",
 	Long:  "",
 	Run: func(cmd *cobra.Command, args []string) {
-
+		business.Start()
 	},
 }
 
