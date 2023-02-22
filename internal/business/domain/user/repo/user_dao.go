@@ -27,7 +27,7 @@ func (d *UserDao) Get(userId int) (*model.User, error) {
 	return user, nil
 }
 
-func (d *UserDao) Save(user *UserDao) error {
+func (d *UserDao) Save(user *model.User) error {
 	return db.DB.Save(&user).Error
 }
 

@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.2.0
 // - protoc             v4.22.0--rc3
-// source: bussiness.ext.proto
+// source: business.ext.proto
 
 package pb
 
@@ -218,5 +218,5 @@ var BusinessExt_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "bussiness.ext.proto",
+	Metadata: "business.ext.proto",
 }

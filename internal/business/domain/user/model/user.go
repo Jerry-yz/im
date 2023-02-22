@@ -1,6 +1,10 @@
 package model
 
-import "gorm.io/gorm"
+import (
+	"learn-im/pkg/protocol/pb"
+
+	"gorm.io/gorm"
+)
 
 type User struct {
 	gorm.Model
@@ -9,4 +13,14 @@ type User struct {
 	Avator   string `json:"avator" gorm:"comment:头像"`
 	Sex      int    `json:"sex" gorm:"comment:性别"`
 	Extra    string `json:"extra" gorm:"comment:额外信息"`
+}
+
+func (u *User) ToProto() *pb.User {
+	return &pb.User{
+		UserId:    int64(u.ID),
+		Nickname:  u.NickName,
+		AvatarUrl: u.Avator,
+		Sex:       int32(u.Sex),
+		Extra:     u.Extra,
+	}
 }
