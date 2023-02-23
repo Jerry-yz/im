@@ -3,7 +3,7 @@ package business
 import (
 	"errors"
 	"learn-im/config"
-	"learn-im/internal/business"
+	business "learn-im/internal/business/api"
 	"learn-im/pkg/protocol/pb"
 	"net"
 	"os"
@@ -45,4 +45,5 @@ func Start() {
 
 func grpcServer(svc *grpc.Server) {
 	pb.RegisterBusinessExtServer(svc, business.NewServer())
+	pb.RegisterBusinessIntServer(svc, business.NewGrpcServerInt())
 }

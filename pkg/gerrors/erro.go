@@ -15,6 +15,7 @@ var (
 	ErrDeviceNotExist = newError(10005, "设备不存在")
 	ErrAreadyIsFriend = newError(10006, "对方已经是好友")
 	ErrUserNotFound   = newError(10007, "用户不存在")
+	ErrNotFound       = newError(10404, "结果不存在")
 )
 
 func newError(code int, msg string) error {

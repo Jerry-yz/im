@@ -1,0 +1,183 @@
+syntax = "proto3";
+package pb;
+option go_package = "im/pkg/protpcol/pb";
+
+import "google/protobuf/empty.proto";
+
+service LogicExt {
+  // 注册设备
+  rpc RegisterDevice(RegisterDeviceReq) returns (RegisterDeviceResp);
+
+  // 推送消息到房间
+  rpc PushRoom(PushRoomReq) returns (google.protobuf.Empty);
+
+  // 发送好友消息
+  rpc SendMessageToFriend(SendMessageReq) returns (SendMessageResp);
+  // 添加好友
+  rpc AddFriend(AddFriendReq) returns (google.protobuf.Empty);
+  // 同意添加好友
+  rpc AgreeAddFriend(AgreeAddFriendReq) returns (google.protobuf.Empty);
+  // 设置好友信息
+  rpc SetFriend(SetFriendReq) returns (SetFriendResp);
+  // 获取好友列表
+  rpc GetFriends(google.protobuf.Empty) returns (GetFriendsResp);
+
+  // 发送群组消息
+  rpc SendMessageToGroup(SendMessageReq) returns (SendMessageResp);
+  // 创建群组
+  rpc CreateGroup(CreateGroupReq) returns (CreateGroupResp);
+  // 更新群组
+  rpc UpdateGroup(UpdateGroupReq) returns (google.protobuf.Empty);
+  // 获取群组信息
+  rpc GetGroup(GetGroupReq) returns (GetGroupResp);
+  // 获取用户加入的所有群组
+  rpc GetGroups(google.protobuf.Empty) returns (GetGroupsResp);
+
+  // 添加群组成员
+  rpc AddGroupMembers(AddGroupMembersReq) returns (AddGroupMembersResp);
+  // 更新群组成员信息
+  rpc UpdateGroupMember(UpdateGroupMemberReq) returns (google.protobuf.Empty);
+  // 添加群组成员
+  rpc DeleteGroupMember(DeleteGroupMemberReq) returns (google.protobuf.Empty);
+  // 获取群组成员
+  rpc GetGroupMembers(GetGroupMembersReq) returns (GetGroupMembersResp);
+}
+
+message RegisterDeviceReq {
+  int64 type = 1;
+  string brand = 2;
+  string model = 3;
+  string system_version = 4;
+  string sdk_version = 5;
+}
+
+message RegisterDeviceResp { int64 device_id = 1; }
+
+message SendMessageReq {
+  int64 receiver_id = 1;
+  bytes content = 2;
+  int64 send_time = 3;
+}
+
+message SendMessageResp { int64 seq = 1; }
+
+message PushRoomReq {
+  int64 room_id = 1;
+  int64 code = 2;
+  bytes content = 3;
+  int64 send_time = 4;
+  bool is_persist = 5;
+  bool is_priority = 6;
+}
+
+message AddFriendReq {
+  int64 friend_id = 1;
+  string remarks = 2;
+  string description = 3;
+}
+
+message AgreeAddFriendReq {
+  int64 user_id = 1;
+  string remarks = 2;
+}
+
+message SetFriendReq {
+  int64 friend_id = 1;
+  string remarks = 2;
+  string extra = 3;
+}
+
+message SetFriendResp {
+  int64 friend_id = 1;
+  string remarks = 2;
+  string extra = 3;
+}
+
+message Friend {
+  int64 user_id = 1;
+  string phone = 2;
+  string nick_name = 3;
+  int64 sex = 4;
+  string avator_url = 5;
+  string user_extra = 6;
+  string remarks = 7;
+  string extra = 8;
+}
+
+message GetFriendsResp { repeated Friend friends = 1; }
+
+message CreateGroupReq {
+  string name = 1;
+  string avator_url = 2;
+  string introduction = 3;
+  string extra = 4;
+  repeated int64 member_ids = 5;
+}
+
+message CreateGroupResp { int64 gorup_id = 1; }
+
+message UpdateGroupReq {
+  int64 group_id = 1;
+  string avator_url = 2;
+  string name = 3;
+  string introduction = 4;
+  string extra = 5;
+}
+
+message GetGroupReq { int64 group_id = 1; }
+
+message GetGroupResp { Group group = 1; }
+
+message GetGroupsResp { repeated Group groups = 1; }
+
+message Group {
+  int64 group_id = 1;
+  string name = 2;
+  string avator_url = 3;
+  string introduction = 4;
+  int64 user_num = 5;
+  string extra = 6;
+  int64 create_time = 7;
+  int64 update_time = 8;
+}
+
+message AddGroupMembersReq {
+  int64 group_id = 1;
+  repeated int64 user_ids = 2;
+}
+
+message AddGroupMembersResp { repeated int64 user_ids = 1; }
+
+enum MemberType {
+  GMT_UNKNOW = 0;
+  GMT_ADMIN = 1;
+  GMT_MEMBER = 2;
+}
+
+message UpdateGroupMemberReq {
+  int64 group_id = 1;
+  int64 user_id = 2;
+  MemberType member_type = 3;
+  string remarks = 4;
+  string extra = 5;
+}
+
+message DeleteGroupMemberReq {
+  int64 group_id = 1;
+  int64 user_id = 2;
+}
+
+message GetGroupMembersReq { int64 group_id = 1; }
+
+message GetGroupMembersResp { repeated GroupMember members = 1; }
+
+message GroupMember {
+  int64 user_id = 1;
+  string nick_name = 2;
+  string avator_url = 3;
+  int64 sex = 4;
+  string user_extra = 5;
+  MemberType member_type = 6;
+  string remarks = 7;
+  string extra = 8;
+}

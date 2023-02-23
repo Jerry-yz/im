@@ -29,6 +29,8 @@ type Configuration struct {
 	LogicRPCListenAddr    string
 	BusinessRPCListenAddr string
 	FileHTTPListenAddr    string
+
+	// pb.ConnectIntClient/
 }
 
 func init() {

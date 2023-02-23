@@ -37,14 +37,14 @@ func (u *UserApp) Update(ctx context.Context, userId int, req *pb.UpdateUserReq)
 	return u.UserRepo.Save(user)
 }
 
-func (u *UserApp) GetByIds(ctx context.Context, userIds []int) (map[int]*pb.User, error) {
+func (u *UserApp) GetByIds(ctx context.Context, userIds []int) (map[int64]*pb.User, error) {
 	userList, err := u.UserRepo.GetByIds(userIds)
 	if err != nil {
 		return nil, gerrors.WarpError(err)
 	}
-	res := make(map[int]*pb.User, len(userList))
+	res := make(map[int64]*pb.User, len(userList))
 	for userId := range userList {
-		res[userId] = userList[userId].ToProto()
+		res[int64(userId)] = userList[userId].ToProto()
 	}
 	return res, nil
 }
