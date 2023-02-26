@@ -1,6 +1,13 @@
 package config
 
-import "os"
+import (
+	"context"
+	"learn-im/pkg/gerrors"
+	"learn-im/pkg/protocol/pb"
+	"os"
+
+	"google.golang.org/grpc"
+)
 
 var builder = map[string]Builder{
 	// "default": defaultBuilder,
@@ -30,14 +37,21 @@ type Configuration struct {
 	BusinessRPCListenAddr string
 	FileHTTPListenAddr    string
 
-	// pb.ConnectIntClient/
+	ConnectIntClientBuilder  func() pb.ConnectIntClient
+	LogicIntClientBuilder    func() pb.LogicIntClient
+	BusinessIntClientBuilder func() pb.BusinessIntClient
 }
 
 func init() {
 	env := os.Getenv("im_env")
 	build, ok := builder[env]
 	if !ok {
-		// builder[env] = defaultBuilder
+		builder[env] = &defaultBuilder{}
 	}
 	Conf = build.Build()
+}
+
+func interceptor(ctx context.Context, method string, req, reply interface{}, cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
+	err := invoker(ctx, method, req, reply, cc, opts...)
+	return gerrors.WarpError(err)
 }

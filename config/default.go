@@ -1,14 +1,22 @@
 package config
 
-// _ "gim/pkg/grpclib/resolver/addrs"
+import (
+	"context"
+	"fmt"
+	"learn-im/pkg/grpclib/picker"
+	"learn-im/pkg/protocol/pb"
+
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/balancer/roundrobin"
+)
 
 type defaultBuilder struct{}
 
-func (*defaultBuilder) Build() Configuration {
+func (d *defaultBuilder) Build() *Configuration {
 	// logger.Level = zap.DebugLevel
 	// logger.Target = logger.Console
 
-	return Configuration{
+	return &Configuration{
 		Mysql:                "root:gim123456@tcp(111.229.238.28:3306)/gim?charset=utf8&parseTime=true",
 		RedisHost:            "111.229.238.28:6379",
 		RedisPassword:        "alber123456",
@@ -24,29 +32,29 @@ func (*defaultBuilder) Build() Configuration {
 		BusinessRPCListenAddr: ":8020",
 		FileHTTPListenAddr:    "8030",
 
-		// ConnectIntClientBuilder: func() pb.ConnectIntClient {
-		// 	conn, err := grpc.DialContext(context.TODO(), "addrs:///127.0.0.1:8000", grpc.WithInsecure(), grpc.WithUnaryInterceptor(interceptor),
-		// 		grpc.WithDefaultServiceConfig(fmt.Sprintf(`{"LoadBalancingPolicy": "%s"}`, picker.AddrPickerName)))
-		// 	if err != nil {
-		// 		panic(err)
-		// 	}
-		// 	return pb.NewConnectIntClient(conn)
-		// },
-		// LogicIntClientBuilder: func() pb.LogicIntClient {
-		// 	conn, err := grpc.DialContext(context.TODO(), "addrs:///docker.for.mac.host.internal:8010", grpc.WithInsecure(), grpc.WithUnaryInterceptor(interceptor),
-		// 		grpc.WithDefaultServiceConfig(fmt.Sprintf(`{"LoadBalancingPolicy": "%s"}`, roundrobin.Name)))
-		// 	if err != nil {
-		// 		panic(err)
-		// 	}
-		// 	return pb.NewLogicIntClient(conn)
-		// },
-		// BusinessIntClientBuilder: func() pb.BusinessIntClient {
-		// 	conn, err := grpc.DialContext(context.TODO(), "addrs:///127.0.0.1:8020", grpc.WithInsecure(), grpc.WithUnaryInterceptor(interceptor),
-		// 		grpc.WithDefaultServiceConfig(fmt.Sprintf(`{"LoadBalancingPolicy": "%s"}`, roundrobin.Name)))
-		// 	if err != nil {
-		// 		panic(err)
-		// 	}
-		// 	return pb.NewBusinessIntClient(conn)
-		// },
+		ConnectIntClientBuilder: func() pb.ConnectIntClient {
+			conn, err := grpc.DialContext(context.TODO(), "addrs:///127.0.0.1:8000", grpc.WithInsecure(), grpc.WithUnaryInterceptor(interceptor),
+				grpc.WithDefaultServiceConfig(fmt.Sprintf(`{"LoadBalancingPolicy": "%s"}`, picker.AddrPickerName)))
+			if err != nil {
+				panic(err)
+			}
+			return pb.NewConnectIntClient(conn)
+		},
+		LogicIntClientBuilder: func() pb.LogicIntClient {
+			conn, err := grpc.DialContext(context.TODO(), "addrs:///docker.for.mac.host.internal:8010", grpc.WithInsecure(), grpc.WithUnaryInterceptor(interceptor),
+				grpc.WithDefaultServiceConfig(fmt.Sprintf(`{"LoadBalancingPolicy": "%s"}`, roundrobin.Name)))
+			if err != nil {
+				panic(err)
+			}
+			return pb.NewLogicIntClient(conn)
+		},
+		BusinessIntClientBuilder: func() pb.BusinessIntClient {
+			conn, err := grpc.DialContext(context.TODO(), "addrs:///127.0.0.1:8020", grpc.WithInsecure(), grpc.WithUnaryInterceptor(interceptor),
+				grpc.WithDefaultServiceConfig(fmt.Sprintf(`{"LoadBalancingPolicy": "%s"}`, roundrobin.Name)))
+			if err != nil {
+				panic(err)
+			}
+			return pb.NewBusinessIntClient(conn)
+		},
 	}
 }
