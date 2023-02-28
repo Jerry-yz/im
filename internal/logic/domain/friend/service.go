@@ -2,9 +2,12 @@ package friend
 
 import (
 	"context"
+	"learn-im/internal/logic/proxy"
 	"learn-im/pkg/gerrors"
 	"learn-im/pkg/protocol/pb"
 	"learn-im/pkg/rpc"
+
+	"github.com/golang/protobuf/proto"
 )
 
 type FriendService struct {
@@ -107,10 +110,47 @@ func (f *FriendService) AgreeAddFriend(ctx context.Context, userId, friendId int
 	}); err != nil {
 		return gerrors.WarpError(err)
 	}
-	_, err = rpc.GetBusinessIntClient().GetUser(ctx, &pb.GetUserReq{UserId: int64(userId)})
+	resp, err := rpc.GetBusinessIntClient().GetUser(ctx, &pb.GetUserReq{UserId: int64(userId)})
 	if err != nil {
 		return gerrors.WarpError(err)
 	}
-	// TODO pushToUser
+	_, err = proxy.PushToUser(ctx, friend.Id, pb.PushCode_PC_ADD_FRIEND, &pb.AddFriendPush{
+		FriendId:  int64(userId),
+		Nickname:  resp.User.Nickname,
+		AvatarUrl: resp.User.AvatarUrl,
+	}, true)
+	if err != nil {
+		return gerrors.WarpError(err)
+	}
 	return nil
+}
+
+func (f *FriendService) SendToFriend(ctx context.Context, deviceId, fromId int64, req *pb.SendMessageReq) (int64, error) {
+	sender, err := rpc.GetSender(int(deviceId), int(fromId))
+	if err != nil {
+		return 0, gerrors.WarpError(err)
+	}
+	pushMsg := &pb.UserMessagePush{
+		Sender:     sender,
+		ReceiverId: req.ReceiverId,
+		Content:    req.Content,
+	}
+	byt, err := proto.Marshal(pushMsg)
+	if err != nil {
+		return 0, gerrors.WarpError(err)
+	}
+	msg := &pb.Message{
+		Code:     int32(pb.PushCode_PC_USER_MESSAGE),
+		Content:  byt,
+		SendTime: req.SendTime,
+	}
+	seq, err := proxy.MessageProxy.SendToUser(ctx, deviceId, fromId, msg, true)
+	if err != nil {
+		return 0, err
+	}
+	_, err = proxy.MessageProxy.SendToUser(ctx, deviceId, req.ReceiverId, msg, true)
+	if err != nil {
+		return 0, gerrors.WarpError(err)
+	}
+	return seq, nil
 }

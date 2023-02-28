@@ -51,3 +51,7 @@ func (f *FriendApp) SetFriend(ctx context.Context, userId int, req *pb.SetFriend
 		Status:   friend.Status,
 	})
 }
+
+func (f *FriendApp) SendToFriend(ctx context.Context, deviceId, toUserId int, req *pb.SendMessageReq) (int64, error) {
+	return f.FriendService.SendToFriend(ctx, int64(deviceId), int64(toUserId), req)
+}
