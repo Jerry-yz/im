@@ -77,13 +77,22 @@ func (f *FriendService) AddFriend(ctx context.Context, userId, friendId int, rem
 	}); err != nil {
 		return gerrors.WarpError(err)
 	}
-	_, err = rpc.GetBusinessIntClient().GetUser(ctx, &pb.GetUserReq{
+	resp, err := rpc.GetBusinessIntClient().GetUser(ctx, &pb.GetUserReq{
 		UserId: friend.FriendId,
 	})
 	if err != nil {
 		return gerrors.WarpError(err)
 	}
 	// TODO pushToUser
+	_, err = proxy.PushToUser(ctx, friend.UserId, pb.PushCode_PC_AGREE_ADD_FRIEND, &pb.AddFriendPush{
+		FriendId:    int64(friendId),
+		Nickname:    resp.User.Nickname,
+		AvatarUrl:   resp.User.AvatarUrl,
+		Description: description,
+	}, true)
+	if err != nil {
+		return gerrors.WarpError(err)
+	}
 	return nil
 }
 

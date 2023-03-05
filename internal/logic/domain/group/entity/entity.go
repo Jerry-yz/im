@@ -1,4 +1,4 @@
-package group
+package entity
 
 import (
 	"context"
@@ -97,7 +97,7 @@ func (g *Group) PushUpdate(ctx context.Context, userId int) error {
 	if err != nil {
 		return gerrors.WarpError(err)
 	}
-	return g.PushMessage(ctx, pb.PushCode_PC_GROUP_MESSAGE, pb.UpdateGroupPush{
+	return g.PushMessage(ctx, pb.PushCode_PC_GROUP_MESSAGE, &pb.UpdateGroupPush{
 		OptId:        int64(userId),
 		OptName:      resp.User.Nickname,
 		Name:         g.Name,
