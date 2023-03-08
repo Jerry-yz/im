@@ -43,6 +43,10 @@ func (d *Dao) ListOnlineByConnAddr(connAddr string) ([]*Device, error) {
 	return devices, nil
 }
 
-func (d *Dao) UpdateStatus(deviceId, status int, connAddr string) error {
-	return db.DB.Where("id = ? and conn_addr = ?", deviceId, connAddr).Update("status", status).Error
+func (d *Dao) UpdateStatus(deviceId, status int, connAddr string) (int, error) {
+	db := db.DB.Where("id = ? and conn_addr = ?", deviceId, connAddr).Update("status", status)
+	if db.Error != nil {
+		return 0, gerrors.WarpError(db.Error)
+	}
+	return int(db.RowsAffected), nil
 }

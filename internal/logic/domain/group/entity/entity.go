@@ -136,7 +136,7 @@ func (g *Group) SendMessage(ctx context.Context, fromDeviceId, fromUserId int, r
 	go func() {
 		defer util.Recover()
 		for _, member := range g.Members {
-			_, err := proxy.MessageProxy.SendToUser(ctx, fromDeviceId, int64(member.ID), msg, true)
+			_, err := proxy.MessageProxy.SendToUser(ctx, fromDeviceId, int64(member.UserId), msg, true)
 			if err != nil {
 				return
 			}

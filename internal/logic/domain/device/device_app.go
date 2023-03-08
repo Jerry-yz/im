@@ -18,18 +18,13 @@ func NewDeviceApp() *DeviceApp {
 	}
 }
 
-func (d *DeviceApp) Register(ctx context.Context, req *pb.Device) (int64, error) {
+func (d *DeviceApp) Register(ctx context.Context, req *pb.RegisterDeviceReq) (int64, error) {
 	device := &Device{
-		Id:            int(req.DeviceId),
-		UserId:        int(req.UserId),
 		Type:          int(req.Type),
 		Brand:         req.Brand,
 		Model:         req.Model,
 		SystemVersion: req.SystemVersion,
 		SdkVersion:    req.SdkVersion,
-		Status:        int(req.Status),
-		ConnAddr:      req.ConnAddr,
-		ClientAddr:    req.ClientAddr,
 	}
 	if !device.IsLegal() {
 		return 0, gerrors.ErrBadRequest

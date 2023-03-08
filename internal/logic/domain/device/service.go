@@ -72,7 +72,7 @@ func (d *DeviceService) ServerStop(ctx context.Context, connAddr string) error {
 		return gerrors.WarpError(err)
 	}
 	for k := range devices {
-		if err := d.DeviceRepo.UpdateDeviceStatus(devices[k].Id, DeViceOffLie, connAddr); err != nil {
+		if err := d.DeviceRepo.UpdateDeviceStatus(devices[k]); err != nil {
 			logger.Logger.Error("update status error", zap.Any("device", devices[k]))
 			return gerrors.WarpError(err)
 		}
