@@ -5,8 +5,8 @@ import (
 	"learn-im/pkg/protocol/pb"
 )
 
-var deviceProxy DeviceProxy
+var DevProxy DeviceProxy
 
 type DeviceProxy interface {
-	ListDeviceByUserId(ctx context.Context, userId int64) ([]*pb.Device, error)
+	ListOnlineByUserId(ctx context.Context, userId int64) ([]*pb.Device, error)
 }

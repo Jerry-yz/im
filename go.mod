@@ -3,8 +3,10 @@ module learn-im
 go 1.18
 
 require (
+	github.com/alberliu/gn v1.13.0
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/golang/protobuf v1.5.2
+	github.com/gorilla/websocket v1.5.0
 	github.com/json-iterator/go v1.1.12
 	github.com/spf13/cobra v1.6.1
 	go.uber.org/zap v1.24.0

@@ -10,13 +10,13 @@ import (
 type Message struct {
 	gorm.Model
 	// Id        int        `json:"id"`
-	UserId    int        `json:"user_id"`
-	RequestId int        `json:"request_id"`
-	Code      int        `json:"code"`
-	Content   []byte     `json:"content"`
-	Seq       int        `json:"seq"`
-	SendTime  *time.Time `json:"send_time"`
-	Status    int        `json:"status"`
+	UserId    int       `json:"user_id"`
+	RequestId int       `json:"request_id"`
+	Code      int       `json:"code"`
+	Content   []byte    `json:"content"`
+	Seq       int       `json:"seq"`
+	SendTime  time.Time `json:"send_time"`
+	Status    int       `json:"status"`
 }
 
 func (m *Message) MessageToPB() *pb.Message {

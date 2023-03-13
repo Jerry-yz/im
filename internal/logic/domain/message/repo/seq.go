@@ -6,6 +6,11 @@ import (
 	"learn-im/pkg/gerrors"
 )
 
+const (
+	SeqObjectTypeUser = 1
+	SeqObjectTypeRoom = 2
+)
+
 type SeqRepo struct {
 }
 
